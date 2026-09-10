@@ -1,6 +1,90 @@
+import { useState } from 'react'
 import './App.css'
 
+const emojisData = [
+  {
+    emoji: '💯',
+    title: '100',
+    keywords: 'Hundred, points, symbol, wow'
+  },
+  {
+    emoji: '🔢',
+    title: '1234',
+    keywords: 'Input symbol for numbers symbol'
+  },
+  {
+    emoji: '🦀',
+    title: 'Crab',
+    keywords: 'Crab, sea creature, eat'
+  },
+  {
+    emoji: '✅',
+    title: 'Check Mark',
+    keywords: 'Yes, confirm'
+  },
+  {
+    emoji: '🫡',
+    title: 'Saluting Face',
+    keywords: 'Salute, respect'
+  },
+  {
+    emoji: '🇺🇸',
+    title: 'USA',
+    keywords: 'Flag of USA'
+  },
+  {
+    emoji: '🥶',
+    title: 'Cold',
+    keywords: 'Cold, temperature, winter'
+  },
+  {
+    emoji: '🙅🏻‍♀️',
+    title: 'Woman Gesturing No',
+    keywords: 'No, stop, woman'
+  },
+  {
+    emoji: '👅',
+    title: 'Tongue',
+    keywords: 'Tongue'
+  },
+  {
+    emoji: '🙏🏿',
+    title: 'Person With Folded Hands',
+    keywords: 'Pls, thanks'
+  },
+  {
+    emoji: '🥳',
+    title: 'Party Face',
+    keywords: 'party, happy'
+  },
+  {
+    emoji: '🤬',
+    title: 'Angry Face',
+    keywords: 'Angry, mad, rage'
+  },
+  {
+    emoji: '💩',
+    title: 'Poo',
+    keywords: 'Poo, poop, shit'
+  },
+  {
+    emoji: '🤡',
+    title: 'Clown',
+    keywords: 'Clown, funny'
+  },
+  {
+    emoji: '💀',
+    title: 'Skull',
+    keywords: 'Skull, death'
+  }
+]
+
 function App() {
+  const [searchTerm, setSearchTerm] = useState('')
+
+  const filteredEmojis = emojisData.filter(item => 
+    item.keywords.toLowerCase().includes(searchTerm.toLowerCase())
+  )
 
   return (
     <>
@@ -9,92 +93,24 @@ function App() {
         <p className='desc'>
           Find emoji by keywords
         </p>
-
-        <input type="text" />
+        <input 
+          type="text" 
+          placeholder="Search..." 
+          value={searchTerm}
+          onChange={(e) => setSearchTerm(e.target.value)}
+        />
       </header>
 
       <main>
-
         <div className='container'>
-
-        <div className='card'>
-          <p className='emoji'>💯</p>
-          <p className='title'>100</p>
-          <p className='keywords'>Hundred, points, symbol, wow</p>
+          {filteredEmojis.map((item, index) => (
+            <div className='card' key={index}>
+              <p className='emoji'>{item.emoji}</p>
+              <p className='title'>{item.title}</p>
+              <p className='keywords'>{item.keywords}</p>
+            </div>
+          ))}
         </div>
-        <div className='card'>
-          <p className='emoji'>🔢</p>
-          <p className='title'>1234</p>
-          <p className='keywords'>input symbol for numbers symbol</p>
-        </div>
-        <div className='card'>
-          <p className='emoji'>🦀</p>
-          <p className='title'>Crab</p>
-          <p className='keywords'></p>
-        </div>
-        <div className='card'>
-          <p className='emoji'>✅</p>
-          <p className='title'>Check Mark</p>
-          <p className='keywords'></p>
-        </div>
-        <div className='card'>
-          <p className='emoji'>🫡</p>
-          <p className='title'>Saluting Face</p>
-          <p className='keywords'></p>
-        </div>
-        <div className='card'>
-          <p className='emoji'>🇺🇸</p>
-          <p className='title'>USA</p>
-          <p className='keywords'>Flag of USA</p>
-        </div>
-        <div className='card'>
-          <p className='emoji'>🥶</p>
-          <p className='title'>Cold</p>
-          <p className='keywords'>Cold, temperature, winter</p>
-        </div>
-        <div className='card'>
-          <p className='emoji'>🙅🏻‍♀️</p>
-          <p className='title'>Woman Gesturing No</p>
-          <p className='keywords'>No, stop, woman</p>
-        </div>
-        <div className='card'>
-          <p className='emoji'>👅</p>
-          <p className='title'>Tongue</p>
-          <p className='keywords'>Tongue</p>
-        </div>
-        <div className='card'>
-          <p className='emoji'>🙏🏿</p>
-          <p className='title'>Person With Folded Hands</p>
-          <p className='keywords'>Pls, thanks</p>
-        </div>
-        <div className='card'>
-          <p className='emoji'>🥳</p>
-          <p className='title'>Party Face</p>
-          <p className='keywords'>party, happy</p>
-        </div>
-        <div className='card'>
-          <p className='emoji'>🤬</p>
-          <p className='title'>Angry Face</p>
-          <p className='keywords'>Angry, mad, rage</p>
-        </div>
-        <div className='card'>
-          <p className='emoji'>💩</p>
-          <p className='title'>Poo</p>
-          <p className='keywords'>Poo, poop, shit</p>
-        </div>
-        <div className='card'>
-          <p className='emoji'>🤡</p>
-          <p className='title'>Clown</p>
-          <p className='keywords'>Clown, funny</p>
-        </div>
-        <div className='card'>
-          <p className='emoji'>💀</p>
-          <p className='title'>Skull</p>
-          <p className='keywords'>Skull, death</p>
-        </div>
-
-      </div>
-
       </main>
     </>
   )
