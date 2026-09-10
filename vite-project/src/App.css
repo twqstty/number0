@@ -44,7 +44,7 @@ header {
 }
 
 main {
-  background-color: #ABB5BE;
+  background-color: #e3e3e3;
   min-height: 80vh;
 
   .container {
@@ -55,7 +55,7 @@ main {
   }
 
   .card {
-    margin: 50px 100px;
+    margin: 50px 30px;
     width: 316px;
     height: 184px;
     border-radius: 4px;
