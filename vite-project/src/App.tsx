@@ -1,90 +1,35 @@
-import { useState } from 'react'
+import { useState, useEffect } from 'react'
+import { getEmojis, isCancelledRequest, type IEmojiItem } from '../src/api/emojiApi.ts'
 import './App.css'
-
-const emojisData = [
-  {
-    emoji: '💯',
-    title: '100',
-    keywords: 'Hundred, points, symbol, wow'
-  },
-  {
-    emoji: '🔢',
-    title: '1234',
-    keywords: 'Input symbol for numbers symbol'
-  },
-  {
-    emoji: '🦀',
-    title: 'Crab',
-    keywords: 'Crab, sea creature, eat'
-  },
-  {
-    emoji: '✅',
-    title: 'Check Mark',
-    keywords: 'Yes, confirm'
-  },
-  {
-    emoji: '🫡',
-    title: 'Saluting Face',
-    keywords: 'Salute, respect'
-  },
-  {
-    emoji: '🇺🇸',
-    title: 'USA',
-    keywords: 'Flag of USA'
-  },
-  {
-    emoji: '🥶',
-    title: 'Cold',
-    keywords: 'Cold, temperature, winter'
-  },
-  {
-    emoji: '🙅🏻‍♀️',
-    title: 'Woman Gesturing No',
-    keywords: 'No, stop, woman'
-  },
-  {
-    emoji: '👅',
-    title: 'Tongue',
-    keywords: 'Tongue'
-  },
-  {
-    emoji: '🙏🏿',
-    title: 'Person With Folded Hands',
-    keywords: 'Pls, thanks'
-  },
-  {
-    emoji: '🥳',
-    title: 'Party Face',
-    keywords: 'party, happy'
-  },
-  {
-    emoji: '🤬',
-    title: 'Angry Face',
-    keywords: 'Angry, mad, rage'
-  },
-  {
-    emoji: '💩',
-    title: 'Poo',
-    keywords: 'Poo, poop, shit'
-  },
-  {
-    emoji: '🤡',
-    title: 'Clown',
-    keywords: 'Clown, funny'
-  },
-  {
-    emoji: '💀',
-    title: 'Skull',
-    keywords: 'Skull, death'
-  }
-]
 
 function App() {
   const [searchTerm, setSearchTerm] = useState('')
+  const [emojis, setEmojis] = useState<IEmojiItem[]>([])
+  const [loading, setLoading] = useState(false)
+  const [error, setError] = useState<string | null>(null)
 
-  const filteredEmojis = emojisData.filter(item => 
-    item.keywords.toLowerCase().includes(searchTerm.toLowerCase())
-  )
+  useEffect(() => {
+    const controller = new AbortController()
+
+    const fetchData = async () => {
+      setLoading(true)
+      setError(null)
+
+      try {
+        const data = await getEmojis(searchTerm, controller.signal)
+        setEmojis(data)
+      } catch (err) {
+        if (isCancelledRequest(err)) return
+        setError('Не удалось загрузить данные. Проверьте, запущен ли сервер (start.bat).')
+      } finally {
+        setLoading(false)
+      }
+    }
+
+    fetchData()
+
+    return () => controller.abort()
+  }, [searchTerm])
 
   return (
     <>
@@ -93,9 +38,9 @@ function App() {
         <p className='desc'>
           Find emoji by keywords
         </p>
-        <input 
-          type="text" 
-          placeholder="Search..." 
+        <input
+          type="text"
+          placeholder="Search..."
           value={searchTerm}
           onChange={(e) => setSearchTerm(e.target.value)}
         />
@@ -103,8 +48,16 @@ function App() {
 
       <main>
         <div className='container'>
-          {filteredEmojis.map((item, index) => (
-            <div className='card' key={index}>
+          {loading && <p className='status'>Загрузка эмодзи...</p>}
+
+          {!loading && error && <p className='status status--error'>{error}</p>}
+
+          {!loading && !error && emojis.length === 0 && (
+            <p className='status'>Эмодзи не найдены</p>
+          )}
+
+          {!loading && !error && emojis.map((item) => (
+            <div className='card' key={item.id}>
               <p className='emoji'>{item.emoji}</p>
               <p className='title'>{item.title}</p>
               <p className='keywords'>{item.keywords}</p>
